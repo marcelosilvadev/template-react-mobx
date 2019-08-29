@@ -1,12 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
+import * as store from './mobx';
+import Routes from './routes';
+import { createBrowserHistory } from 'history';
+import { Provider } from 'mobx-react';
+import { router } from './mobx/';
+import { Router } from 'react-router-dom';
+import { syncHistoryWithStore } from 'mobx-react-router';
+import './index.css';
+import 'semantic-ui-css/semantic.min.css';
+import Loading from './components/loading';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const rootElement = document.getElementById('root');
+const browserHistory = createBrowserHistory();
+const history = syncHistoryWithStore(browserHistory, router);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ReactDOM.render(
+  <Provider {...store}>
+    <>
+      <Loading />
+      <Router history={history}>
+        <Routes />
+      </Router>
+    </>
+  </Provider>,
+  rootElement
+);
+serviceWorker.register();
